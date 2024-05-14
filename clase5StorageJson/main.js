@@ -18,7 +18,7 @@ while(continuar){
     const producto = {
         titulo:tituloProducto,
         descripcion:descripcionProducto,
-        precioProducto:precioProducto,
+        precio:precioProducto,
         nuevo: nuevoProducto
     }
 
