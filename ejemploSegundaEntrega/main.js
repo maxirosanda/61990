@@ -1,18 +1,3 @@
-/*
-tipos de datos -> string o number o boolean o array o object o combinaciones
-variables -> let o const
-ciclos -> for o while o do while o for of / tambien podes usar forEach
-condicionales -> if o else if o switch / tambien podes usar metodos de busqueda y transformacion
-funciones -> function o arrow function 
-
-paradigma -> funcional(funciones y objetos literales) o orientado a objetos(clases y metodos)
-metodos de arrays -> push,splice,etc
-metodos de busqueda y transformacion -> find o/y filter o/y some o/y reduce o/y findIndex , etc
-manipulacion del dom -> getElementById / innerText / createElement / append / remove / value 
-localStorage 
-eventos -> click o/y  o/y change 
-
-*/
 
 let tareas = JSON.parse(localStorage.getItem("tareas"))  || []
 
@@ -33,14 +18,27 @@ const borrarTarea = (id) => {
    localStorage.setItem("tareas",JSON.stringify(tareas))
 }
 
-const actualizarTarea = (id,nombreNuevoTarea,contenidoNuevoTarea) => {
-
+const actualizarTarea = (id,nombre,contenido) => {
+    tareas = tareas.map(tarea =>{
+        if(tarea.id === id){
+            return {
+                id,
+                nombre,
+                fecha: new Date(),
+                contenido
+            }
+        }
+        return tarea
+    })
+    localStorage.setItem("tareas",JSON.stringify(tareas))
+   
 }
 
 const crearTarjetaTarea = (tarea) => {
     const app = document.getElementById("app")
     const element = document.createElement("div")
     element.className = "tarjeta"
+    element.id = tarea.id
     element.innerHTML = `
                             <input type="text"  class="input" value="${tarea.nombre}">
                             <textarea type="text"  class="input">${tarea.contenido}</textarea>
@@ -48,6 +46,11 @@ const crearTarjetaTarea = (tarea) => {
                             <button class="btn btn-borrar">Borrar</button>
     `
     app.append(element)
+}
+
+const borrarTarjetaTarea = (id) => {
+    const element = document.getElementById(id)
+    element.remove()
 }
 
 const principal = () =>{
@@ -65,6 +68,25 @@ const principal = () =>{
         contenidoNuevaTarea.value = ""
 
     })
+
+    const app = document.getElementById("app")
+    app.addEventListener("click",(event)=>{
+        if(event.target && event.target.classList.contains("btn-borrar")){
+            const parentElement = event.target.parentElement
+            const id = parentElement.id
+            borrarTarea(id)
+            borrarTarjetaTarea(id)
+        }
+        if(event.target && event.target.classList.contains("btn-actualizar")){
+            const parentElement = event.target.parentElement
+            const id = parentElement.id
+            const inputs = parentElement.getElementsByClassName("input")
+            const nombre = inputs[0].value
+            const contenido = inputs[1].value
+            actualizarTarea(id,nombre,contenido)
+        }
+    })
+
 
 }
 
